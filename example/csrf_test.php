@@ -1,11 +1,13 @@
 <?php
+// url_rewriter.tags
+ini_set('url_rewriter.tags', 'form=,a=href');
 require_once(__DIR__.'/../src/csrf_init.php');
 ?>
 <html>
 <head><title>CSRF Test</title></head>
 <body>
 <form method='post'>
-<h1> validate() function example</h1>
+<h1> CSRF protection example</h1>
     <div style="width: 300px;text-align: left;margin: 1em;">
     <p>
      CSRF Test
@@ -24,5 +26,8 @@ require_once(__DIR__.'/../src/csrf_init.php');
     </ul>
     </div>
 </form>
+<div>
+    <a href='csrf_test.php'>TEST LINK</a>
+</div>
 </body>
 </html>

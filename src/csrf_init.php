@@ -9,8 +9,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 $_SESSION['CSRF_SECRET'] = $_SESSION['CSRF_SECRET'] ?? random_bytes(32);
-$csrf_token = $_GET['csrftk'] ?? '';
-$csrf_token = $_POST['csrftk'] ?? '';
+$csrf_token = $_POST['csrftk'] ?? ($_GET['csrftk'] ?? '');
 
 if ($csrf_token) {
     $ret = csrf_validate_token($_SESSION['CSRF_SECRET'], $csrf_token);

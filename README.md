@@ -1,30 +1,30 @@
 # PHP CSRF Protection Example
 
+* URI unique CSRF token.
+* CSRF token expiration.
+* Automatic CSRF protection without code modification. i.e. CSRF unprotected PHP app can be protected w/o code modification.
+* Recommended: PHP 7.1 or up.
 
- * URI unique CSRF token.
- * CSRF token expiration.
- * Automatic CSRF protection without code modification. i.e. CSRF unprotected PHP app can be protected w/o code modification.
- * Recommended: PHP 7.1 or up.
-
- ## How to use
+## How to use
 
  Simply include 'csrf_init.php'.
 
 ```php
 require_once('/path/to/csrf_init.php');
 ```
+
 This script requires PHP 7.0 or up.
 
 ## How it behaves
 
-Cryptographically strong CSRF token is generated for each URI automatically.
+Cryptographicaly strong CSRF token is generated for each URI automatically.
 
- * It automatically start session if session is not active.
- * It automatically add CSRF token to web page output.
- * CSRF token is expired after 1800 seconds by default.
- * URLs for your site have 'csrftk' parameter and protected.
- * When CSRF validation is failed, it raises RuntimeException.
- * If $GLOBAL['DISABLE_CSRF'] is defined and true, it disables CSRF protection.
+* It automatically start session if session is not active.
+* It automatically add CSRF token to web page output.
+* CSRF token is expired after 1800 seconds by default.
+* URLs for your site have 'csrftk' parameter and protected.
+* When CSRF validation is failed, it raises RuntimeException.
+* If $GLOBAL['DISABLE_CSRF'] is defined and true, it disables CSRF protection.
 
 ## How to test drive
 
@@ -52,5 +52,4 @@ ini_set('url_rewriter.tags', 'form=,a=href');
 
 This script uses output buffer. Therefore outputs already sent cannot be rewritten. Include 'csrf_init.php' before you start output anything.
 
-
-Have fun!
+Have fun!!

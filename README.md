@@ -4,6 +4,7 @@
  * URI unique CSRF token.
  * CSRF token expiration.
  * Automatic CSRF protection without code modification. i.e. CSRF unprotected PHP app can be protected w/o code modification.
+ * Recommended: PHP 7.1 or up.
 
  ## How to use
 

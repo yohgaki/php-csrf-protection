@@ -1,7 +1,12 @@
 <?php
-// url_rewriter.tags
-ini_set('url_rewriter.tags', 'form=,a=href');
-require_once(__DIR__.'/../src/csrf_init.php');
+try {
+    // Update url_rewriter.tags to enable href rewrite.
+    ini_set('url_rewriter.tags', 'form=,a=href');
+    require_once(__DIR__.'/../src/csrf_init.php');
+} catch (Exception $e) {
+    echo 'You have sent invalid or expired request.';
+    exit;
+}
 ?>
 <html>
 <head><title>CSRF Test</title></head>

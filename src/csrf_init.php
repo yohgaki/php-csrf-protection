@@ -23,6 +23,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 $_SESSION['CSRF_SECRET'] = $_SESSION['CSRF_SECRET'] ?? random_bytes(32);
 $csrf_token = $_POST['csrftk'] ?? ($_GET['csrftk'] ?? '');
+// WARNING: csrf_validate_token() return TRUE or error message. Never do if ($valid)
 $valid = csrf_validate_token($_SESSION['CSRF_SECRET'], $csrf_token);
 $token = json_decode(base64_decode($csrf_token), true);
 

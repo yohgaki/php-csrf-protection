@@ -79,7 +79,7 @@ function csrf_validate_token($secret, $token)
  */
 function csrf_get_uri()
 {
-    $q = $_GET; unset($q['csrftk']);
+    $q = $_GET ?? ''; unset($q['csrftk']);
     $q = http_build_query($q);
     $p = parse_url(($_SERVER['REQUEST_URI'] ?? ''));
 

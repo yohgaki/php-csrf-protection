@@ -23,7 +23,7 @@ function csrf_generate_token($secret, $expire = 300)
     $salt = base64_encode(random_bytes(33));
     $expire += time();
     $key = base64_encode(hash_hkdf('sha256', $secret, 0, $uri."\0".$expire, $salt));
-    $token = join("-", ['salt' => $salt, 'key' => $key, 'expire' => $expire]);
+    $token = join("-", [$salt, $key, $expire]);
     assert(strlen($token) > 32);
     return $token;
 }

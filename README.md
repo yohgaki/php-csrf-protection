@@ -16,9 +16,9 @@ Cryptographicaly strong CSRF tokens with expiration are generated for each URI a
 * FORMs will have hidden 'csrftk' input automatically.
 * URLs for your site will have 'csrftk' parameter automatically.
 * When CSRF validation is failed, it raises RuntimeException.
-* If $GLOBAL['_CSRF_DISABLE_'] is defined and true, it disables CSRF protection.
-* If $GLOBAL['_CSRF_EXPIRE_'] is set, specified expiration time is used.
-* If $GLOBAL['_CSRF_RENEW_'] is set, specified renewal time is used.
+* If $GLOBALS['_CSRF_DISABLE_'] is defined and true, it disables CSRF protection.
+* If $GLOBALS['_CSRF_EXPIRE_'] is set, specified expiration time is used.
+* If $GLOBALS['_CSRF_RENEW_'] is set, specified renewal time is used.
 
 ## How to use
 
@@ -31,9 +31,9 @@ try {
     // Update url_rewriter.tags to enable href rewrite.
     ini_set('url_rewriter.tags', 'form=,a=href');
     // Set up config values
-    $GLOBAL['_CSRF_DISABLE_'] = false;
-    $GLOBAL['_CSRF_EXPIRE_']  = 60; // 60 sec expiration
-    $GLOBAL['_CSRF_RENEW_']   = 55; // 55 sec renewal before expiration
+    $GLOBALS['_CSRF_DISABLE_'] = false;
+    $GLOBALS['_CSRF_EXPIRE_']  = 60; // 60 sec expiration
+    $GLOBALS['_CSRF_RENEW_']   = 55; // 55 sec renewal before expiration
     require_once(__DIR__.'/../src/csrf_init.php');
 } catch (Exception $e) {
     // Show nice CSRF token error message for production use.

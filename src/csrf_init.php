@@ -7,11 +7,13 @@
 require_once(__DIR__.'/csrf_protection.php');
 
 // Set these globals to adjust settings
-$GLOBAL['_CSRF_DISABLE_'] = $GLOBAL['_CSRF_DISABLE_'] ?? false;
-$GLOBAL['_CSRF_EXPIRE_']  = $GLOBAL['_CSRF_EXPIRE_'] ?? 300;
-$GLOBAL['_CSRF_RENEW_']   = $GLOBAL['_CSRF_RENEW_'] ?? 60;
+// I choose to pollute $GLOBALS, you may choose whatever namespace
+// to pollute. e.g. Constant.
+$GLOBALS['_CSRF_DISABLE_'] = $GLOBALS['_CSRF_DISABLE_'] ?? false;
+$GLOBALS['_CSRF_EXPIRE_']  = $GLOBALS['_CSRF_EXPIRE_'] ?? 300;
+$GLOBALS['_CSRF_RENEW_']   = $GLOBALS['_CSRF_RENEW_'] ?? 60;
 
-if (!empty($GLOBAL['_CSRF_DISABLE_'])) {
+if (!empty($GLOBALS['_CSRF_DISABLE_'])) {
     return;
 }
 if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -26,8 +28,8 @@ $token = json_decode(base64_decode($csrf_token), true);
 
 if ($valid !== true
     || empty($token['expire'])
-    || $token['expire'] < time() + $GLOBAL['_CSRF_RENEW_']) {
-    $csrf_token_new = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBAL['_CSRF_EXPIRE_']);
+    || $token['expire'] < time() + $GLOBALS['_CSRF_RENEW_']) {
+    $csrf_token_new = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
 }
 if (!empty($orig_name)) {
     // Session is started by this code. Cleanup.

@@ -3,9 +3,9 @@ try {
     // Update url_rewriter.tags to enable href rewrite.
     ini_set('url_rewriter.tags', 'form=,a=href');
     // Set up config values
-    $GLOBAL['_CSRF_DISABLE_'] = false;
-    $GLOBAL['_CSRF_EXPIRE_']  = 60; // 60 sec expiration
-    $GLOBAL['_CSRF_RENEW_']   = 55; // 55 sec renewal before expiration
+    $GLOBALS['_CSRF_DISABLE_'] = false;
+    $GLOBALS['_CSRF_EXPIRE_']  = 60; // 60 sec expiration
+    $GLOBALS['_CSRF_RENEW_']   = 55; // 55 sec renewal before expiration
     require_once(__DIR__.'/../src/csrf_init.php');
 } catch (Exception $e) {
     // Show nice CSRF token error message for production use.
@@ -37,10 +37,10 @@ try {
     <p><a href='csrf_test.php'>TEST LINK</a></p>
 </div>
 <div>
-    CSRF Expire: <?php echo $GLOBAL['_CSRF_EXPIRE_']; ?> sec.
+    CSRF Expire: <?php echo $GLOBALS['_CSRF_EXPIRE_']; ?> sec.
 </div>
 <div>
-    CSRF Renew: <?php echo $GLOBAL['_CSRF_RENEW_']; ?> sec before expiration.
+    CSRF Renew: <?php echo $GLOBALS['_CSRF_RENEW_']; ?> sec before expiration.
 </div>
 <div>
     CSRF Token: <?php echo $_POST['csrftk'] ?? ($_GET['csrftk'] ?? ''); ?>

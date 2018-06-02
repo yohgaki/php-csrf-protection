@@ -28,5 +28,5 @@ if (!$csrf_token) {
 }
 
 if ($valid !== true) {
-    throw new RuntimeException('CSRF Token validation error: '. $ret);
+    throw new RuntimeException('CSRF Token validation error: '. $valid);
 }

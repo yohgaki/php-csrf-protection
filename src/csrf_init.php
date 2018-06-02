@@ -26,7 +26,7 @@ $_SESSION['CSRF_SECRET'] = $_SESSION['CSRF_SECRET'] ?? random_bytes(32);
 
 $csrftk = $_POST['csrftk'] ?? ($_GET['csrftk'] ?? '');
 $token = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
-if (!is_string($csrftk)) {
+if (!$csrftk) {
     output_add_rewrite_var('csrftk', $token);
     throw new RuntimeException('CSRF Token validation error: No token');
 }

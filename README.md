@@ -5,38 +5,32 @@
 * Automatic CSRF protection without code modification. i.e. CSRF unprotected PHP app can be protected w/o code modification.
 * Recommended: PHP 7.1 or up.
 
-## How to use
-
- Simply include 'csrf_init.php'.
-
-```php
-require_once('/path/to/csrf_init.php');
-```
-
-This script requires PHP 7.0 or up.
-
 ## How it behaves
 
-Cryptographicaly strong CSRF token is generated for each URI automatically.
+Cryptographicaly strong CSRF tokens with expiration are generated for each URI automatically.
 
 * It automatically start session if session is not active.
 * It automatically add CSRF token to web page output.
-* CSRF token is expired after 1800 seconds by default.
-* URLs for your site have 'csrftk' parameter and protected.
+* CSRF token expires after 1800 seconds by default.
+* CSRF token is updated 900 seconds before expiration.
+* FORMs will have hidden 'csrftk' input.
+* URLs for your site will have 'csrftk' parameter.
 * When CSRF validation is failed, it raises RuntimeException.
-* If $GLOBAL['DISABLE_CSRF'] is defined and true, it disables CSRF protection.
+* If $GLOBAL['CSRF_DISABLE'] is defined and true, it disables CSRF protection.
 
 ## How to test drive
 
-Clone repository and change directory to 'example', then start PHP CLI server like;
+Clone repository and change directory to 'php-csrf-protection/example', then start PHP CLI server like;
 
 ```
-$ php -S 127.0.0.1:888
+$ php -S 127.0.0.1:8888
 ```
 
-Access test script and submit page.
+Access test script.
 
 http://127.0.0.1:8888/csrf_test.php
+
+First access will raise CSRF exception. Clieck "Return to page" and there are tokens.
 
 ## FAQ
 

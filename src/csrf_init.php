@@ -17,7 +17,7 @@ $_SESSION['CSRF_SECRET'] = $_SESSION['CSRF_SECRET'] ?? random_bytes(32);
 $csrf_token = $_POST['csrftk'] ?? ($_GET['csrftk'] ?? '');
 
 $keys = json_decode(base64_decode($csrf_token), true);
-if (empty($keys['expire']) || $keys['expire'] < time() + 900) {
+if (empty($keys['expire']) || $keys['expire'] < time() - 900) {
     $csrf_token_new = csrf_generate_token($_SESSION['CSRF_SECRET']);
 }
 output_add_rewrite_var('csrftk', $csrf_token_new ?? $csrf_token);

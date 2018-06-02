@@ -22,9 +22,8 @@ function csrf_generate_token($secret, $expire = 300)
     $uri = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
     $salt = base64_encode(random_bytes(33));
     $expire += time();
-    $key  = base64_encode(hash_hkdf('sha256', $secret, 0, $uri."\0".$expire, $salt));
-    $json = json_encode(['salt' => $salt, 'key' => $key, 'expire' => $expire]);
-    $token = base64_encode($json);
+    $key = base64_encode(hash_hkdf('sha256', $secret, 0, $uri."\0".$expire, $salt));
+    $token = join("-", ['salt' => $salt, 'key' => $key, 'expire' => $expire]);
     assert(strlen($token) > 32);
     return $token;
 }
@@ -45,15 +44,19 @@ function csrf_validate_token($secret, $token)
     assert(is_string($token) && strlen($token) >= 32);
 
     $uri = @parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
-    $keys = json_decode(base64_decode($token), true);
-    if (empty($keys) || empty($keys['salt']) || empty($keys['key'] || empty($keys['expire']))) {
+    $tmp = explode("-", $token);
+    if (count($tmp) !== 3) {
         return 'Invalid token';
     }
-    if ($keys['expire'] < time()) {
+    list($salt, $key, $expire) = $tmp;
+    if (empty($salt) || empty($key) || empty($expire)) {
+        return 'Invalid token';
+    }
+    if ($expire < time()) {
         return 'Expired';
     }
-    $key = base64_encode(hash_hkdf('sha256', $secret, 0, $uri."\0".$keys['expire'], $keys['salt']));
-    if (hash_equals($key, $keys['key']) === false) {
+    $key2 = base64_encode(hash_hkdf('sha256', $secret, 0, $uri."\0".$expire, $salt));
+    if (hash_equals($key, $key2) === false) {
         return 'Key mismatch';
     }
     return true;

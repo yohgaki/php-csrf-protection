@@ -34,16 +34,16 @@ try {
     </div>
 </form>
 <div>
-    <p><a href='csrf_test.php'>TEST LINK</a></p>
+    <p><a href='<?php echo csrf_get_uri(); ?>'>TEST LINK</a></p>
 </div>
 <div>
-    CSRF Expire: <?php echo $GLOBALS['_CSRF_EXPIRE_']; ?> sec.
+    CSRF Expire: <?php echo htmlspecialchars($GLOBALS['_CSRF_EXPIRE_']); ?> sec.
 </div>
 <div>
-    CSRF Renew: <?php echo $GLOBALS['_CSRF_RENEW_']; ?> sec before expiration.
+    CSRF Renew: <?php echo htmlspecialchars($GLOBALS['_CSRF_RENEW_']); ?> sec before expiration.
 </div>
 <div>
-    CSRF Token: <?php echo $_POST['csrftk'] ?? ($_GET['csrftk'] ?? ''); ?>
+    CSRF Token: <?php echo htmlspecialchars($_POST['csrftk'] ?? ($_GET['csrftk'] ?? '')); ?>
 </div>
 </body>
 </html>

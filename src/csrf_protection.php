@@ -43,6 +43,12 @@ function csrf_validate_token($secret, $token)
     assert(is_string($secret) && strlen($secret) >= 32);
     assert(is_string($token) && strlen($token) >= 32);
 
+    if ($token === '') {
+        return 'No token';
+    }
+    if (!is_string($token)) {
+        return 'Attack - Non-string token';
+    }
     $uri = @parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
     $tmp = explode("-", $token);
     if (count($tmp) !== 3) {
@@ -63,4 +69,41 @@ function csrf_validate_token($secret, $token)
         return 'Attack - Key mismatch';
     }
     return true;
+}
+
+
+/**
+ * Utility function that returns "csrftk" removed current URI.
+ *
+ * @return string URI string
+ */
+function csrf_get_uri()
+{
+    $q = $_GET; unset($q['csrftk']);
+    $q = http_build_query($q);
+    $p = parse_url(($_SERVER['REQUEST_URI'] ?? ''));
+
+    $uri = '';
+    if (!empty($p['host'])) {
+        $uri = '//'. $p['host'];
+    }
+    if (!empty($p['user'])) {
+        $uri .= ':'. $p['user'];
+    }
+    if (!empty($p['pass'])) {
+        $uri .= '@'. $p['pass'];
+    }
+    if (!empty($p['port'])) {
+        $uri .= ':'. $p['port'];
+    }
+    if ($q) {
+        $uri .= $p['path'] .'?'. $q;
+    } else {
+        $uri .= $p['path'];
+    }
+    if (!empty($p['fragment'])) {
+        $uri .= '#'. $p['fragment'];
+    }
+
+    return $uri;
 }

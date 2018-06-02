@@ -46,18 +46,18 @@ function csrf_validate_token($secret, $token)
     $uri = @parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
     $tmp = explode("-", $token);
     if (count($tmp) !== 3) {
-        return 'Invalid token';
+        return 'Atatck - Invalid token';
     }
     list($salt, $key, $expire) = $tmp;
     if (empty($salt) || empty($key) || empty($expire)) {
-        return 'Invalid token';
+        return 'Attack - Invalid token';
     }
     if ($expire < time()) {
         return 'Expired';
     }
     $key2 = bin2hex(hash_hkdf('sha256', $secret, 0, $uri."\0".$expire, $salt));
     if (hash_equals($key, $key2) === false) {
-        return 'Key mismatch';
+        return 'Attack - Key mismatch';
     }
     return true;
 }

@@ -25,28 +25,24 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 $_SESSION['CSRF_SECRET'] = $_SESSION['CSRF_SECRET'] ?? random_bytes(32);
 
 $csrftk = $_POST['csrftk'] ?? ($_GET['csrftk'] ?? '');
-if (!$csrftk || !is_string($csrftk)) {
-    $token = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
+$token = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
+if (!is_string($csrftk)) {
     output_add_rewrite_var('csrftk', $token);
     throw new RuntimeException('CSRF Token validation error: No token');
+}
+if (!is_string($csrftk)) {
+    output_add_rewrite_var('csrftk', $token);
+    throw new RuntimeException('CSRF Token validation error: Attack detected. Malformed token');
 }
 
 // WARNING: csrf_validate_token() returns TRUE or error message. Never do if ($valid)
 $valid = csrf_validate_token($_SESSION['CSRF_SECRET'], $csrftk);
 if ($valid !== true) {
-    $token = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
     output_add_rewrite_var('csrftk', $token);
     throw new RuntimeException('CSRF Token validation error: '. $valid);
 }
 
-$tmp = explode('-', $csrftk);
-if (count($tmp) !== 3) {
-    $token = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
-    output_add_rewrite_var('csrftk', $token);
-    throw new RuntimeException('CSRF Token validation error: Malformed token');
-}
-list($salt, $key, $expire) = $tmp;
-
+list($salt, $key, $expire) = explode('-', $csrftk);
 if ($expire < time() + $GLOBALS['_CSRF_RENEW_']) {
     $csrftk = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
 }

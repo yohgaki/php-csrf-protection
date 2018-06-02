@@ -15,19 +15,27 @@ if (!empty($GLOBAL['_CSRF_DISABLE_'])) {
     return;
 }
 if (session_status() !== PHP_SESSION_ACTIVE) {
+    $orig_name = session_name('CSRFTK');
     session_start();
 }
 
 $_SESSION['CSRF_SECRET'] = $_SESSION['CSRF_SECRET'] ?? random_bytes(32);
 $csrf_token = $_POST['csrftk'] ?? ($_GET['csrftk'] ?? '');
-
 $valid = csrf_validate_token($_SESSION['CSRF_SECRET'], $csrf_token);
-$token  = json_decode(base64_decode($csrf_token), true);
+$token = json_decode(base64_decode($csrf_token), true);
+
 if ($valid !== true
     || empty($token['expire'])
     || $token['expire'] < time() + $GLOBAL['_CSRF_RENEW_']) {
     $csrf_token_new = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBAL['_CSRF_EXPIRE_']);
 }
+if (!empty($orig_name)) {
+    // Session is started by this code. Cleanup.
+    session_commit();
+    session_name($orig_name);
+    unset($_SESSION);
+}
+
 output_add_rewrite_var('csrftk', $csrf_token_new ?? $csrf_token);
 
 if (!$csrf_token) {

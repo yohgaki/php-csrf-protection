@@ -49,7 +49,7 @@ function csrf_validate_token($secret, $token)
     if (!is_string($token)) {
         return 'Attack - Non-string token';
     }
-    $uri = @parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+    $uri = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
     $tmp = explode("-", $token);
     if (count($tmp) !== 3) {
         return 'Atatck - Invalid token';

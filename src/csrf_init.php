@@ -3,6 +3,7 @@
  * Sample CSRF protection script
  *
  * Simply include this file to add CSRF protection for all pages.
+ * Function is not used intentionally to keep namespace clean.
  */
 require_once(__DIR__.'/csrf_protection.php');
 
@@ -22,28 +23,38 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 $_SESSION['CSRF_SECRET'] = $_SESSION['CSRF_SECRET'] ?? random_bytes(32);
-$csrf_token = $_POST['csrftk'] ?? ($_GET['csrftk'] ?? '');
-// WARNING: csrf_validate_token() returns TRUE or error message. Never do if ($valid)
-$valid = csrf_validate_token($_SESSION['CSRF_SECRET'], $csrf_token);
-$token = json_decode(base64_decode($csrf_token), true);
 
-if ($valid !== true
-    || empty($token['expire'])
-    || $token['expire'] < time() + $GLOBALS['_CSRF_RENEW_']) {
-    $csrf_token_new = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
+$csrftk = $_POST['csrftk'] ?? ($_GET['csrftk'] ?? '');
+if (!$csrftk || !is_string($csrftk)) {
+    $token = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
+    output_add_rewrite_var('csrftk', $token);
+    throw new RuntimeException('CSRF Token validation error: No token');
 }
+
+// WARNING: csrf_validate_token() returns TRUE or error message. Never do if ($valid)
+$valid = csrf_validate_token($_SESSION['CSRF_SECRET'], $csrftk);
+if ($valid !== true) {
+    $token = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
+    output_add_rewrite_var('csrftk', $token);
+    throw new RuntimeException('CSRF Token validation error: '. $valid);
+}
+
+$tmp = explode('-', $csrftk);
+if (count($tmp) !== 3) {
+    $token = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
+    output_add_rewrite_var('csrftk', $token);
+    throw new RuntimeException('CSRF Token validation error: Malformed token');
+}
+list($salt, $key, $expire) = $tmp;
+
+if ($expire < time() + $GLOBALS['_CSRF_RENEW_']) {
+    $csrftk = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
+}
+output_add_rewrite_var('csrftk', $csrftk);
+
 if (!empty($orig_name)) {
     // Session is started by this code. Cleanup.
     session_commit();
     session_name($orig_name);
     unset($_SESSION);
-}
-
-output_add_rewrite_var('csrftk', $csrf_token_new ?? $csrf_token);
-
-if (!$csrf_token) {
-    throw new RuntimeException('CSRF Token validation error: No token');
-}
-if ($valid !== true) {
-    throw new RuntimeException('CSRF Token validation error: '. $valid);
 }

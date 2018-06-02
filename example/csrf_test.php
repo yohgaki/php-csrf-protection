@@ -4,6 +4,9 @@ try {
     ini_set('url_rewriter.tags', 'form=,a=href');
     require_once(__DIR__.'/../src/csrf_init.php');
 } catch (Exception $e) {
+    unset($_GET['csrftk']);
+    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH). '?' .http_build_query($_GET);
+    echo '<a href="'.  $uri .'">Click here to return page<a><br />';
     echo 'You have sent invalid or expired request.';
     exit;
 }

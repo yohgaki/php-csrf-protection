@@ -1,6 +1,4 @@
 <?php
-
-
 // TEST & Usage
 // $secret = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 // var_dump( $tk = csrf_generate_token($secret, 60, 'aaa') );

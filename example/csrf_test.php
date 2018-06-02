@@ -25,6 +25,7 @@ try {
     <ul>
         <li><div>Username: </div><input type="text" name="username" value="<?php echo htmlspecialchars($_POST['username'] ?? 'Test User');?>" /></li>
         <li><div>Email: </div><input type="text" name="email" value="<?php echo htmlspecialchars($_POST['email'] ?? 'user@example.com');?>" /></li>
+        <li><div>Send These!</div><input type="submit" name="submit" value="submit" /></li>
     </ul>
     </div>
 </form>

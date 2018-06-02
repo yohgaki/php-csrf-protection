@@ -20,7 +20,7 @@ function csrf_generate_token($secret, $expire = 300)
     assert(is_int($expire) && $expire >= 60);
 
     $uri = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
-    $salt = bin2hex(random_bytes(33));
+    $salt = bin2hex(random_bytes(32));
     $expire += time();
     $key = bin2hex(hash_hkdf('sha256', $secret, 0, $uri."\0".$expire, $salt));
     $token = join("-", [$salt, $key, $expire]);

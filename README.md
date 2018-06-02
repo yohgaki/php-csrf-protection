@@ -32,6 +32,11 @@ http://127.0.0.1:8888/csrf_test.php
 
 First access will raise CSRF exception. Press "Click here to return page" link and there are tokens.
 
+Live test script is here:
+
+https://sample.ohgaki.net/php-csrf-protection/example/csrf_test.php
+
+
 ## FAQ
 
 ### HTML links do not have CSRF tokens

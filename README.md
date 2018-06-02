@@ -67,6 +67,16 @@ https://sample.ohgaki.net/php-csrf-protection/example/csrf_test.php
 
 ## FAQ
 
+### Any security notices?
+
+Since it adds CSRF tokens to "href", HTTP_REFERER should be disabled to protect tokens.
+
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
+
+Chrome and Firefox supports "Referrer-Policy".
+
+It does not consider query parameters to generate CSRF token. It is better to include query parameters for CSRF token generation. You need to add tokens manually in order to assign distinguished CSRF tokens.
+
 ### HTML links do not have CSRF tokens
 
 Since PHP 7.1.0, output rewriter uses its own output buffer. output_rewrite_var() only rewrites HTML form. To add CSRF token value to HTML links, change ini setting as follows;

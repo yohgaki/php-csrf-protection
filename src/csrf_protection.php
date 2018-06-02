@@ -52,6 +52,9 @@ function csrf_validate_token($secret, $token)
     if (empty($salt) || empty($key) || empty($expire)) {
         return 'Attack - Invalid token';
     }
+    if (strlen($expire) != strspn($expire, '1234567890')) {
+        return 'Attack - Invalid expire';
+    }
     if ($expire < time()) {
         return 'Expired';
     }

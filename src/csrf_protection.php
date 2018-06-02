@@ -14,7 +14,7 @@
  *
  * @return string CSRF token.
  */
-function csrf_generate_token($secret, $expire = 1800)
+function csrf_generate_token($secret, $expire = 300)
 {
     assert(is_string($secret) && strlen($secret) >= 32);
     assert(is_int($expire) && $expire >= 60);

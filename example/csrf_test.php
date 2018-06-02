@@ -2,13 +2,17 @@
 try {
     // Update url_rewriter.tags to enable href rewrite.
     ini_set('url_rewriter.tags', 'form=,a=href');
+    // Set up config values
+    $GLOBAL['_CSRF_DISABLE_'] = false;
+    $GLOBAL['_CSRF_EXPIRE_']  = 60; // 60 sec expiration
+    $GLOBAL['_CSRF_RENEW_']   = 55; // 55 sec renewal before expiration
     require_once(__DIR__.'/../src/csrf_init.php');
 } catch (Exception $e) {
     // Show nice CSRF token error message for production use.
     unset($_GET['csrftk']); // Remove "csrftk" to avoid multiple values
     $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH). '?' .http_build_query($_GET);
     echo '<a href="'.  $uri .'">Click here to return page<a><br />';
-    echo 'You have sent invalid or expired request.';
+    echo $e->getMessage();
     exit;
 }
 ?>
@@ -30,7 +34,16 @@ try {
     </div>
 </form>
 <div>
-    <a href='csrf_test.php'>TEST LINK</a>
+    <p><a href='csrf_test.php'>TEST LINK</a></p>
+</div>
+<div>
+    CSRF Expire: <?php echo $GLOBAL['_CSRF_EXPIRE_']; ?> sec.
+</div>
+<div>
+    CSRF Renew: <?php echo $GLOBAL['_CSRF_RENEW_']; ?> sec before expiration.
+</div>
+<div>
+    CSRF Token: <?php echo $_POST['csrftk'] ?? ($_GET['csrftk'] ?? ''); ?>
 </div>
 </body>
 </html>

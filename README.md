@@ -11,10 +11,10 @@ Cryptographicaly strong CSRF tokens with expiration are generated for each URI a
 
 * It automatically start session if session is not active.
 * It automatically add CSRF token to web page output.
-* CSRF token expires after 1800 seconds by default.
-* CSRF token is updated 900 seconds before expiration.
-* FORMs will have hidden 'csrftk' input.
-* URLs for your site will have 'csrftk' parameter.
+* CSRF token expires with configured expiration.
+* CSRF token is updated with configured duration.
+* FORMs will have hidden 'csrftk' input automatically.
+* URLs for your site will have 'csrftk' parameter automatically.
 * When CSRF validation is failed, it raises RuntimeException.
 * If $GLOBAL['CSRF_DISABLE'] is defined and true, it disables CSRF protection.
 
@@ -30,7 +30,7 @@ Access test script.
 
 http://127.0.0.1:8888/csrf_test.php
 
-First access will raise CSRF exception. Clieck "Return to page" and there are tokens.
+First access will raise CSRF exception. Press "Click here to return page" link and there are tokens.
 
 ## FAQ
 

@@ -22,7 +22,7 @@ Cryptographicaly strong CSRF tokens with expiration are generated for each URI a
 
 ## How to use
 
-Execute script like below for all PHP script files. You may use "auto_prepend_file"
+Execute script like below for requests. You may use "auto_prepend_file"
 for this purpose.
 
 ```php

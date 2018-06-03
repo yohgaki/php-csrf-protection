@@ -18,7 +18,7 @@ assert(is_null($GLOBALS['_CSRF_SESSION']) || is_bool($GLOBALS['_CSRF_SESSION']))
 $GLOBALS['_CSRF_DISABLE_'] = $GLOBALS['_CSRF_DISABLE_'] ?? false;
 $GLOBALS['_CSRF_EXPIRE_']  = $GLOBALS['_CSRF_EXPIRE_'] ?? 300;
 $GLOBALS['_CSRF_RENEW_']   = $GLOBALS['_CSRF_RENEW_'] ?? 60;
-$GLOBALS['_CSRF_SESSION_']  = $GLOBALS['_CSRF_SESSION_'] ?? true;
+$GLOBALS['_CSRF_SESSION_'] = $GLOBALS['_CSRF_SESSION_'] ?? true;
 
 if (!empty($GLOBALS['_CSRF_DISABLE_'])) {
     return;

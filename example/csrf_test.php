@@ -6,6 +6,7 @@ try {
     $GLOBALS['_CSRF_DISABLE_'] = false;
     $GLOBALS['_CSRF_EXPIRE_']  = 60; // 60 sec expiration
     $GLOBALS['_CSRF_RENEW_']   = 55; // 55 sec renewal before expiration
+    $GLOBALS['_CSRF_SESSION_'] = true; // Use dedicated session for CSRF
     require_once(__DIR__.'/../src/csrf_init.php');
 } catch (Exception $e) {
     // Show nice CSRF token error message for production use.

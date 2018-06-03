@@ -7,17 +7,23 @@
  */
 require_once(__DIR__.'/csrf_protection.php');
 
+assert(is_null($GLOBALS['_CSRF_DISABLE_']) || is_bool($GLOBALS['_CSRF_DISABLE_']));
+assert(is_null($GLOBALS['_CSRF_EXPIRE_']) || is_int($GLOBALS['_CSRF_EXPIRE_']));
+assert(is_null($GLOBALS['_CSRF_RENEW_']) || is_int($GLOBALS['_CSRF_RENEW_']));
+assert(is_null($GLOBALS['_CSRF_SESSION']) || is_bool($GLOBALS['_CSRF_SESSION']));
+
 // Set these globals to adjust settings
 // I choose to pollute $GLOBALS, you may choose whatever namespace
 // to pollute. e.g. Constant.
 $GLOBALS['_CSRF_DISABLE_'] = $GLOBALS['_CSRF_DISABLE_'] ?? false;
 $GLOBALS['_CSRF_EXPIRE_']  = $GLOBALS['_CSRF_EXPIRE_'] ?? 300;
 $GLOBALS['_CSRF_RENEW_']   = $GLOBALS['_CSRF_RENEW_'] ?? 60;
+$GLOBALS['_CSRF_SESSION_']  = $GLOBALS['_CSRF_SESSION_'] ?? true;
 
 if (!empty($GLOBALS['_CSRF_DISABLE_'])) {
     return;
 }
-if (session_status() !== PHP_SESSION_ACTIVE) {
+if ($GLOBALS['_CSRF_SESSION_'] && session_status() !== PHP_SESSION_ACTIVE) {
     $orig_name = session_name('CSRFTK');
     session_start();
 }

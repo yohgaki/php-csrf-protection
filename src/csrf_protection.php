@@ -64,12 +64,12 @@ function csrf_validate_token($secret, $token, $extra_info = '')
     if (strlen($expire) != strspn($expire, '1234567890')) {
         return 'Attack - Invalid expire';
     }
-    if ($expire < time()) {
-        return 'Expired';
-    }
     $key2 = bin2hex(hash_hkdf('sha256', $secret, 0, $uri."\0".$extra_info."\0".$expire, $salt));
     if (hash_equals($key, $key2) === false) {
         return 'Attack - Key mismatch';
+    }
+    if ($expire < time()) {
+        return 'Expired';
     }
     return true;
 }

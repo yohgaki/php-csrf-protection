@@ -71,11 +71,31 @@ https://sample.ohgaki.net/php-csrf-protection/example/csrf_test.php
 
 Since it adds CSRF tokens to "href", HTTP_REFERER should be disabled to protect tokens.
 
+https://w3c.github.io/webappsec-referrer-policy/
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
 
-Chrome and Firefox supports "Referrer-Policy".
+Chrome and Firefox support "Referrer-Policy". HTTPS can be used also.
 
-It does not consider query parameters to generate CSRF token. It is better to include query parameters for CSRF token generation. You need to add tokens manually in order to assign distinguished CSRF tokens.
+It does not consider query parameters to generate CSRF token as well as does not provide different tokens for HTTP methods. It is better to include query parameters and HTTP methods for CSRF token generation. You need to add tokens manually in order to assign distinguished CSRF tokens.
+
+csrf_validate_token()/csrf_generate_token() supports $extra_info parameters. You may pass $extra_info something like;
+
+```php
+// Generating token
+$query_string = http_build_query($query_array);
+$extra_info = ("GET\0".sha1($query_string));
+$token = csrf_generate_token($secret, 3600, $extra_info);
+// Validating token
+unset($_GET['csrftk']);
+$query_string = http_build_query($query_array);
+$extra_info = ("GET\0".sha1($query_string));
+$valid = csrf_generate_token($secret, $_GET['csrftk'], $extra_info);
+if ($valid !=== ture) {
+    throw new RuntimeException('CSRF validation error');
+}
+```
+
+SHA1 should be good enough for this purpose, but you may want to use SHA2/3.
 
 ### HTML links do not have CSRF tokens
 

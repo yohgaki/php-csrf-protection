@@ -83,19 +83,17 @@ csrf_validate_token()/csrf_generate_token() supports $extra_info parameters. You
 ```php
 // Generating token
 $query_string = http_build_query($query_array);
-$extra_info = ("GET\0".sha1($query_string));
+$extra_info = ("GET\0".hash('sha256', $query_string));
 $token = csrf_generate_token($secret, 3600, $extra_info);
 // Validating token
 unset($_GET['csrftk']);
 $query_string = http_build_query($query_array);
-$extra_info = ("GET\0".sha1($query_string));
+$extra_info = ("GET\0".hash('sha256', $query_string));
 $valid = csrf_generate_token($secret, $_GET['csrftk'], $extra_info);
 if ($valid !=== ture) {
     throw new RuntimeException('CSRF validation error');
 }
 ```
-
-SHA1 should be good enough for this purpose, but you may want to use SHA2/3.
 
 ### HTML links do not have CSRF tokens
 

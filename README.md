@@ -2,8 +2,8 @@
 
 * URI unique CSRF token.
 * CSRF token expiration.
-* Automatic CSRF protection without code modification. i.e. CSRF unprotected PHP app can be protected w/o code modification.
-* Recommended: PHP 7.1 or up.
+* Automatic CSRF protection without code modification. i.e. CSRF unprotected PHP app can be protected w/o code modification. Use 'auto_prepend_file' for this.
+* Recommended: PHP 7.1 or up. hash_hkdf() could be written by hash_hmac(), but output_rewrite_var() has poor implementation PHP 7.0 and blow.
 
 ## How it behaves
 
@@ -16,9 +16,6 @@ Cryptographicaly strong CSRF tokens with expiration are generated for each URI a
 * FORMs will have hidden 'csrftk' input automatically.
 * URLs for your site will have 'csrftk' parameter automatically.
 * When CSRF validation is failed, it raises RuntimeException.
-* If $GLOBALS['_CSRF_DISABLE_'] is defined and true, it disables CSRF protection.
-* If $GLOBALS['_CSRF_EXPIRE_'] is set, specified expiration time is used.
-* If $GLOBALS['_CSRF_RENEW_'] is set, specified renewal time is used.
 
 ## How to use
 
@@ -26,7 +23,6 @@ Execute script like below for requests. You may use "auto_prepend_file"
 for this purpose.
 
 ```php
-<?php
 try {
     // Update url_rewriter.tags to enable href rewrite.
     ini_set('url_rewriter.tags', 'form=,a=href');
@@ -34,16 +30,14 @@ try {
     $GLOBALS['_CSRF_DISABLE_'] = false;
     $GLOBALS['_CSRF_EXPIRE_']  = 60; // 60 sec expiration
     $GLOBALS['_CSRF_RENEW_']   = 55; // 55 sec renewal before expiration
+    $GLOBALS['_CSRF_SESSION_'] = true; // Use dedicated session for CSRF
     require_once(__DIR__.'/../src/csrf_init.php');
 } catch (Exception $e) {
     // Show nice CSRF token error message for production use.
-    unset($_GET['csrftk']); // Remove "csrftk" to avoid multiple values
-    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH). '?' .http_build_query($_GET);
-    echo '<a href="'.  $uri .'">Click here to return page<a><br />';
+    echo '<a href="'.  csrf_get_uri() .'">Click here to return page<a><br />';
     echo $e->getMessage();
     exit;
 }
-?>
 ```
 
 ## How to test drive

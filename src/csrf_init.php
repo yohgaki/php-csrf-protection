@@ -19,6 +19,7 @@ $GLOBALS['_CSRF_DISABLE_'] = $GLOBALS['_CSRF_DISABLE_'] ?? false;
 $GLOBALS['_CSRF_EXPIRE_']  = $GLOBALS['_CSRF_EXPIRE_'] ?? 300;
 $GLOBALS['_CSRF_RENEW_']   = $GLOBALS['_CSRF_RENEW_'] ?? 60;
 $GLOBALS['_CSRF_SESSION_'] = $GLOBALS['_CSRF_SESSION_'] ?? true;
+$GLOBALS['_CSRF_BLACKLIST_'] = $GLOBALS['_CSRF_BLACKLIST_'] ?? array();
 
 if (!empty($GLOBALS['_CSRF_DISABLE_'])) {
     return;
@@ -34,6 +35,11 @@ $csrftk = $_POST['csrftk'] ?? $_GET['csrftk'] ?? '';
 // WARNING: csrf_validate_token() returns TRUE or error message. Never do if ($valid)
 $valid = csrf_validate_token($_SESSION['CSRF_SECRET'], $csrftk);
 if ($valid !== true) {
+    // White list should be used, but it cannot be done universally.
+    // Some get params can be dangerous, remove them.
+    foreach($GLOBALS['_CSRF_BLACKLIST_'] as $el) {
+        unset($_GET[$el]);
+    }
     $token = csrf_generate_token($_SESSION['CSRF_SECRET'], $GLOBALS['_CSRF_EXPIRE_']);
     output_add_rewrite_var('csrftk', $token);
     throw new RuntimeException('CSRF Token validation error: '. $valid);

@@ -7,10 +7,12 @@ try {
     $GLOBALS['_CSRF_EXPIRE_']  = 60; // 60 sec expiration
     $GLOBALS['_CSRF_RENEW_']   = 55; // 55 sec renewal before expiration
     $GLOBALS['_CSRF_SESSION_'] = true; // Use dedicated session for CSRF
+    $GLOBALS['_CSRF_BLACKLIST_'] = ['delete', 'add', 'edit']; // Set dangerous GET vars.
     require_once(__DIR__.'/../src/csrf_init.php');
 } catch (Exception $e) {
     // Show nice CSRF token error message for production use.
     echo '<a href="'.  csrf_get_uri() .'">Click here to return page<a><br />';
+    echo 'If this is not an access you intended, DO NOT CLICK above link!<br />';
     echo $e->getMessage();
     exit;
 }

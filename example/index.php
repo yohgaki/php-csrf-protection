@@ -1,4 +1,6 @@
 <?php
+// If you would like to avoid CSRF token error for landing page,
+// you need to initialize CSRF token manually.
 session_name('CSRFTK');
 session_start();
 require_once(__DIR__.'/../src/csrf_protection.php');

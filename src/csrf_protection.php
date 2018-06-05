@@ -10,7 +10,6 @@
  *
  * @param string $secret Random secret string for key derivation.
  * @param int    $expire Expiration in seconds.
- * @param string $uri    URI for this request.
  * @param string $extra_info Extra info such as query parameters.
  *
  * @return string CSRF token.

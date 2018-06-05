@@ -19,7 +19,7 @@ try {
 <h1>'. htmlspecialchars($e->getMessage()). '</h1>
 <a href="'.  csrf_get_uri($blacklist) .'">Click here to return page<a><br />
 <br />
-<b>If this is not an access you intended, DO NOT CLICK above link!></b><br />
+<b>If this is not an access you intended, DO NOT CLICK above link!</b><br />
 <br />
 Return to <a href="index.php">home</a>. <br />
 </div>

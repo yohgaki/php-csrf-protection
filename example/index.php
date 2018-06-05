@@ -12,12 +12,13 @@ output_add_rewrite_var('csrftk', $token);
 <html>
 <head><title>CSRF Test</title></head>
 <body>
-<form method='post'>
+<div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: auto; width: 80%; height: 30rem;">
 <h1> CSRF protection example</h1>
-    <div style="width: 300px;text-align: left;margin: 1em;">
-    <p>
-     Go to <a href="csrf_test.php">test page</a>.
-    </p>
-    </div>
+<div>
+<p>
+Go to <a href="csrf_test.php">test page</a>.
+</p>
+</div>
+</div>
 </body>
 </html>

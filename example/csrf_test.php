@@ -14,25 +14,33 @@ try {
     // Show nice CSRF token error message for production use.
     if (empty($_POST)) {
         echo '
-        <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: auto; width: 80%; height: 30rem;">
-        <h1>'. htmlspecialchars($e->getMessage()). '</h1>
-        <a href="'.  csrf_get_uri($blacklist) .'">Click here to return page<a><br />
-        <br />
-        If this is not an access you intended, DO NOT CLICK above link!<br />
-        <br />
-        Return to <a href="index.php">home</a>. <br />
-        </div>
-        ';
+<html><head></head><body>
+<div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: auto; width: 80%; height: 30rem;">
+<h1>'. htmlspecialchars($e->getMessage()). '</h1>
+<a href="'.  csrf_get_uri($blacklist) .'">Click here to return page<a><br />
+<br />
+<b>If this is not an access you intended, DO NOT CLICK above link!></b><br />
+<br />
+Return to <a href="index.php">home</a>. <br />
+</div>
+</body></html>
+';
     } else {
         echo '
-        <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: auto; width: 80%; height: 30rem;">
-        <h1>'. htmlspecialchars($e->getMessage()). '</h1>
-        <?php echo csrf_get_form() ?>
-        <a href="'. csrf_get_uri($blacklist) .'">Click here to return page<a><br />
-        If this is not an access you intended, DO NOT CLICK above button nor link!<br />
-        Return to <a href="index.php">home</a>. <br />
-        </div>
-        ';
+<html><head></head><body>
+<div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: auto; width: 80%; height: 30rem;">
+<h1>'. htmlspecialchars($e->getMessage()). '</h1>
+<div>
+'. csrf_get_form() .'
+</div>
+<a href="'. csrf_get_uri($blacklist) .'">Click here to return page<a><br />
+<br />
+<b>If this is not an access you intended, DO NOT CLICK above button nor link!</b><br />
+<br />
+Return to <a href="index.php">home</a>. <br />
+</div>
+</body></html>
+';
     }
     exit;
 }

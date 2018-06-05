@@ -132,10 +132,11 @@ function csrf_get_form($opts = [], $blacklist = [])
     $opts['submit'] = $opts['submit'] ?? '<input type="submit" name="submit" value="Send posted data to server" />'.PHP_EOL;
     $opts['class']  = $opts['class'] ?? 'csrf_error';
 
-    echo '<form method="post" action="'. csrf_get_uri($blacklist) .'" class="'. htmlspecialchars($opts['class']) .'">' .PHP_EOL;
+    $f = '<form method="post" action="'. csrf_get_uri($blacklist) .'" class="'. htmlspecialchars($opts['class']) .'">' .PHP_EOL;
     foreach($_POST as $key => $val) {
-        echo '<input type="hidden" name="'. htmlspecialchars($key) .'" value="'. htmlspecialchars($val) .'" />' .PHP_EOL;
+        $f .= '<input type="hidden" name="'. htmlspecialchars($key) .'" value="'. htmlspecialchars($val) .'" />' .PHP_EOL;
     }
-    echo $opts['submit'] .PHP_EOL;
-    echo '</form>' .PHP_EOL;
+    $f .= $opts['submit'] .PHP_EOL;
+    $f .= '</form>' .PHP_EOL;
+    return $f;
 }

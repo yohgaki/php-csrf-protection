@@ -11,7 +11,6 @@ assert(is_null($GLOBALS['_CSRF_DISABLE_']) || is_bool($GLOBALS['_CSRF_DISABLE_']
 assert(is_null($GLOBALS['_CSRF_EXPIRE_']) || is_int($GLOBALS['_CSRF_EXPIRE_']));
 assert(is_null($GLOBALS['_CSRF_RENEW_']) || is_int($GLOBALS['_CSRF_RENEW_']));
 assert(is_null($GLOBALS['_CSRF_SESSION_']) || is_bool($GLOBALS['_CSRF_SESSION_']));
-assert(is_null($GLOBALS['_CSRF_BLACKLIST_']) || is_bool($GLOBALS['_CSRF_BALCKLIST_']));
 
 // Set these globals to adjust settings
 // I choose to pollute $GLOBALS, you may choose whatever namespace
@@ -20,7 +19,6 @@ $GLOBALS['_CSRF_DISABLE_'] = $GLOBALS['_CSRF_DISABLE_'] ?? false;
 $GLOBALS['_CSRF_EXPIRE_']  = $GLOBALS['_CSRF_EXPIRE_'] ?? 300;
 $GLOBALS['_CSRF_RENEW_']   = $GLOBALS['_CSRF_RENEW_'] ?? 60;
 $GLOBALS['_CSRF_SESSION_'] = $GLOBALS['_CSRF_SESSION_'] ?? true;
-$GLOBALS['_CSRF_BLACKLIST_'] = $GLOBALS['_CSRF_BLACKLIST_'] ?? array();
 
 if (!empty($GLOBALS['_CSRF_DISABLE_'])) {
     return;

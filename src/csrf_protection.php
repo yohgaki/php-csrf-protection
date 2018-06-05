@@ -18,13 +18,12 @@
 function csrf_generate_token($secret, $expire = 300, $extra_info = '')
 {
     assert(is_string($secret) && strlen($secret) >= 32);
-    assert(is_int($expire) && $expire >= 60);
+    assert(is_int($expire) && $expire >= 15);
     assert(is_string($extra_info));
 
-    $uri = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
     $salt = bin2hex(random_bytes(32));
     $expire += time();
-    $key = bin2hex(hash_hkdf('sha256', $secret, 0, $uri."\0".$extra_info."\0".$expire, $salt));
+    $key = bin2hex(hash_hkdf('sha256', $secret, 0, $extra_info."\0".$expire, $salt));
     $token = join("-", [$salt, $key, $expire]);
     assert(strlen($token) > 32);
     return $token;
@@ -52,7 +51,6 @@ function csrf_validate_token($secret, $token, $extra_info = '')
     if (!is_string($token)) {
         return 'Attack - Non-string token';
     }
-    $uri = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
     $tmp = explode("-", $token);
     if (count($tmp) !== 3) {
         return 'Atatck - Invalid token';
@@ -64,7 +62,7 @@ function csrf_validate_token($secret, $token, $extra_info = '')
     if (strlen($expire) != strspn($expire, '1234567890')) {
         return 'Attack - Invalid expire';
     }
-    $key2 = bin2hex(hash_hkdf('sha256', $secret, 0, $uri."\0".$extra_info."\0".$expire, $salt));
+    $key2 = bin2hex(hash_hkdf('sha256', $secret, 0, $extra_info."\0".$expire, $salt));
     if (hash_equals($key, $key2) === false) {
         return 'Attack - Key mismatch';
     }
@@ -80,10 +78,17 @@ function csrf_validate_token($secret, $token, $extra_info = '')
  *
  * @return string URI string
  */
-function csrf_get_uri()
+function csrf_get_uri($blacklist = [])
 {
-    $q = $_GET ?? ''; unset($q['csrftk']);
-    $q = http_build_query($q);
+    assert(is_array($blacklise));
+    // White list should be used, but it cannot be done universally.
+    // Some get params can be dangerous, remove them.
+    $g = $_GET ?? [];
+    foreach($blacklist as $el) {
+        unset($g[$el]);
+    }
+    unset($g['csrftk']);
+    $q = http_build_query($g);
     $p = parse_url(($_SERVER['REQUEST_URI'] ?? ''));
 
     $uri = '';
@@ -109,4 +114,29 @@ function csrf_get_uri()
     }
 
     return $uri;
+}
+
+
+/**
+ * Utility function that generates posted form.
+ */
+function csrf_get_form($opts = [], $blacklist = [])
+{
+    assert(is_array($opts));
+    assert(is_array($blacklist));
+
+    if (empty($_POST)) {
+        return '';
+    }
+    unset($_POST['csrftk']);
+
+    $opts['submit'] = $opts['submit'] ?? '<input type="submit" name="submit" value="Send posted data to server" />'.PHP_EOL;
+    $opts['class']  = $opts['class'] ?? 'csrf_error';
+
+    echo '<form method="post" action="'. csrf_get_uri($blacklist) .'" class="'. htmlspecialchars($opts['class']) .'">' .PHP_EOL;
+    foreach($_POST as $key => $val) {
+        echo '<input type="hidden" name="'. htmlspecialchars($key) .'" value="'. htmlspecialchars($val) .'" />' .PHP_EOL;
+    }
+    echo $opts['submit'] .PHP_EOL;
+    echo '</form>' .PHP_EOL;
 }

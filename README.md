@@ -1,6 +1,5 @@
 # PHP CSRF Protection Example
 
-* URI unique CSRF token.
 * CSRF token expiration.
 * Automatic CSRF protection without code modification. i.e. CSRF unprotected PHP app can be protected w/o code modification. Use 'auto_prepend_file' for this.
 * Recommended: PHP 7.1 or up. hash_hkdf() could be written by hash_hmac(), but output_rewrite_var() has poor implementation PHP 7.0 and blow.
@@ -81,7 +80,7 @@ $extra_info = ("GET\0".hash('sha256', $query_string));
 $token = csrf_generate_token($secret, 3600, $extra_info);
 // Validating token
 unset($_GET['csrftk']);
-$query_string = http_build_query($query_array);
+$query_string = http_build_query($_GET);
 $extra_info = ("GET\0".hash('sha256', $query_string));
 $valid = csrf_generate_token($secret, $_GET['csrftk'], $extra_info);
 if ($valid !=== ture) {

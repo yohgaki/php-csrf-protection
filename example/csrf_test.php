@@ -4,15 +4,24 @@ try {
     ini_set('url_rewriter.tags', 'form=,a=href');
     // Set up config values
     $GLOBALS['_CSRF_DISABLE_'] = false;
-    $GLOBALS['_CSRF_EXPIRE_']  = 60; // 60 sec expiration
-    $GLOBALS['_CSRF_RENEW_']   = 55; // 55 sec renewal before expiration
+    $GLOBALS['_CSRF_EXPIRE_']  = 15; // 15 sec expiration
+    $GLOBALS['_CSRF_RENEW_']   = 10; // 10 sec renewal before expiration
     $GLOBALS['_CSRF_SESSION_'] = true; // Use dedicated session for CSRF
-    $GLOBALS['_CSRF_BLACKLIST_'] = ['delete', 'add', 'edit']; // Set dangerous GET vars.
+    $blacklist = ['delete', 'add', 'edit']; // Set dangerous GET vars.
+    // Whitelist is better. Use https://github.com/yohgaki/validate-php-scr
     require_once(__DIR__.'/../src/csrf_init.php');
 } catch (Exception $e) {
     // Show nice CSRF token error message for production use.
-    echo '<a href="'.  csrf_get_uri() .'">Click here to return page<a><br />';
-    echo 'If this is not an access you intended, DO NOT CLICK above link!<br />';
+    if (empty($_POST)) {
+        echo '<a href="'.  csrf_get_uri($blacklist) .'">Click here to return page<a><br />';
+        echo 'If this is not an access you intended, DO NOT CLICK above link!<br />';
+        echo 'Return to <a href="index.php">home</a>. <br />';
+    } else {
+        echo csrf_get_form();
+        echo '<a href="'.  csrf_get_uri($blacklist) .'">Click here to return page<a><br />';
+        echo 'If this is not an access you intended, DO NOT CLICK above button nor link!<br />';
+        echo 'Return to <a href="index.php">home</a>. <br />';
+    }
     echo $e->getMessage();
     exit;
 }
@@ -26,6 +35,7 @@ try {
     <p>
      CSRF Test
     </p>
+    </div>
     <div>
     <ul>
         <li><div>Username: </div><input type="text" name="username" value="<?php echo htmlspecialchars($_POST['username'] ?? 'Test User');?>" /></li>

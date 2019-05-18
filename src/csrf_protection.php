@@ -79,7 +79,7 @@ function csrf_validate_token($secret, $token, $extra_info = '')
  */
 function csrf_get_uri($blacklist = [])
 {
-    assert(is_array($blacklise));
+    assert(is_array($blacklist));
     // White list should be used, but it cannot be done universally.
     // Some get params can be dangerous, remove them.
     $g = $_GET ?? [];
